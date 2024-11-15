@@ -215,6 +215,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1605408588197318, guid: 136486fd3adeccb4a93bbede6d9d4a99, type: 3}
       insertIndex: -1
       addedObject: {fileID: 991721967}
+    - targetCorrespondingSourceObject: {fileID: 1605408588197318, guid: 136486fd3adeccb4a93bbede6d9d4a99, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 991721968}
   m_SourcePrefab: {fileID: 100100000, guid: 136486fd3adeccb4a93bbede6d9d4a99, type: 3}
 --- !u!1 &705507993
 GameObject:
@@ -482,6 +485,20 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &991721968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991721960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 113077befa028ba42a173e9aa9eca912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reloadClip: {fileID: -203655887218126122, guid: d226234387be735468d88c34fc0dc8ec, type: 3}
+  grenadeClip: {fileID: -203655887218126122, guid: b2760a3f6eb25004491241a151cd41b9, type: 3}
 --- !u!1 &1769008947
 GameObject:
   m_ObjectHideFlags: 0
