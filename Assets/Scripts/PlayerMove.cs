@@ -44,13 +44,14 @@ public class PlayerMove : MonoBehaviour
 
 	private void Update()
 	{
-		Vector3 inputMoveDir = new Vector3(inputValue.x, 0, inputValue.y) * walkSpeed;
+		float runValue = Input.GetAxis("Fire3");
+		Vector3 inputMoveDir = new Vector3(inputValue.x, 0, inputValue.y) * (walkSpeed + runValue * (runSpeed - walkSpeed));
 		Vector3 actualMoveDir = transform.TransformDirection(inputMoveDir);
 
 		characterController.Move(actualMoveDir * Time.deltaTime);
 
 		animator.SetFloat("Xdir", inputValue.x);
 		animator.SetFloat("Ydir", inputValue.y);
-		animator.SetFloat("Speed", inputValue.magnitude);
+		animator.SetFloat("Speed", inputValue.magnitude + runValue);
 	}
 }
