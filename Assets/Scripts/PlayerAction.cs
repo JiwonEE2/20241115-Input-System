@@ -14,30 +14,45 @@ public class PlayerAction : MonoBehaviour
 	public AnimationClip reloadClip;
 	public AnimationClip grenadeClip;
 
-	private bool isReloading = false;
-	private bool isGrenade = false;
-
 	public InputActionAsset controlDefine;
 	InputAction fireAction;
-	bool isFire;
+	InputAction reloadAction;
+	InputAction grenadeAction;
+
+	private bool isReload = false;
+	private bool isGrenade = false;
+	private bool isFire = false;
+
+	private bool reloading = false;
+	private bool grenadeing = false;
 
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
 		controlDefine = GetComponent<PlayerInput>().actions;
 		fireAction = controlDefine.FindAction("Fire");
+		reloadAction = controlDefine.FindAction("Reload");
+		grenadeAction = controlDefine.FindAction("Grenade");
 	}
 
 	private void OnEnable()
 	{
 		fireAction.performed += OnFireEvent;
 		fireAction.canceled += OnFireEvent;
+		reloadAction.performed += OnReloadEvent;
+		reloadAction.canceled += OnReloadEvent;
+		grenadeAction.performed += OnGrenadeEvent;
+		grenadeAction.canceled += OnGrenadeEvent;
 	}
 
 	private void OnDisable()
 	{
 		fireAction.performed -= OnFireEvent;
 		fireAction.canceled -= OnFireEvent;
+		reloadAction.performed -= OnReloadEvent;
+		reloadAction.canceled -= OnReloadEvent;
+		grenadeAction.performed -= OnGrenadeEvent;
+		grenadeAction.canceled -= OnGrenadeEvent;
 	}
 
 	public void OnFireEvent(InputAction.CallbackContext context)
@@ -52,27 +67,55 @@ public class PlayerAction : MonoBehaviour
 		}
 	}
 
+	public void OnReloadEvent(InputAction.CallbackContext context)
+	{
+		if (context.ReadValue<float>() > 0)
+		{
+			isReload = true;
+		}
+		else
+		{
+			isReload = false;
+		}
+	}
+
+	public void OnGrenadeEvent(InputAction.CallbackContext context)
+	{
+		if (context.ReadValue<float>() > 0)
+		{
+			isGrenade = true;
+		}
+		else
+		{
+			isGrenade = false;
+		}
+	}
+
+
 	private void Start()
 	{
-		untilReload = new WaitUntil(() => isReloading);
-		untilGrenade = new WaitUntil(() => isGrenade);
+		untilReload = new WaitUntil(() => reloading);
+		untilGrenade = new WaitUntil(() => grenadeing);
 		StartCoroutine(ReloadCoroutine());
 		StartCoroutine(GrenadeCoroutine());
 	}
 
 	private void Update()
 	{
-		if (isReloading == false && isGrenade == false && Input.GetKeyDown(KeyCode.R))
+		if (isReload && isGrenade == false && isFire == false && reloading == false)
 		{
-			isReloading = true;
+			reloading = true;
 			animator.SetTrigger("Reload");
 		}
-		if (isReloading == false && isGrenade == false && Input.GetKeyDown(KeyCode.F))
+		if (isReload == false && isGrenade && isFire == false && grenadeing == false)
 		{
-			isGrenade = true;
+			grenadeing = true;
 			animator.SetTrigger("Grenade");
 		}
-		if (isFire && isReloading == false && isGrenade == false) animator.SetTrigger("Fire");
+		if (isReload == false && isGrenade == false && isFire)
+		{
+			animator.SetTrigger("Fire");
+		}
 	}
 
 	IEnumerator ReloadCoroutine()
@@ -81,7 +124,7 @@ public class PlayerAction : MonoBehaviour
 		{
 			yield return untilReload;
 			yield return new WaitForSeconds(reloadClip.length);
-			isReloading = false;
+			reloading = false;
 		}
 	}
 
@@ -91,7 +134,7 @@ public class PlayerAction : MonoBehaviour
 		{
 			yield return untilGrenade;
 			yield return new WaitForSeconds(grenadeClip.length);
-			isGrenade = false;
+			grenadeing = false;
 		}
 	}
 }
