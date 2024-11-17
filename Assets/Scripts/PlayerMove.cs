@@ -16,6 +16,8 @@ public class PlayerMove : MonoBehaviour
 	InputAction moveAction;
 
 	Vector2 inputValue;
+	Vector2 smoothValue;
+	Vector2 velocity;
 
 	private void Awake()
 	{
@@ -45,13 +47,17 @@ public class PlayerMove : MonoBehaviour
 	private void Update()
 	{
 		float runValue = Input.GetAxis("Fire3");
-		Vector3 inputMoveDir = new Vector3(inputValue.x, 0, inputValue.y) * (walkSpeed + runValue * (runSpeed - walkSpeed));
+
+		float speed = walkSpeed + runValue * (runSpeed - walkSpeed);
+		smoothValue = Vector2.SmoothDamp(smoothValue, inputValue, ref velocity, 0.1f);
+		Vector3 inputMoveDir = new Vector3(smoothValue.x, 0, smoothValue.y) * speed;
+
 		Vector3 actualMoveDir = transform.TransformDirection(inputMoveDir);
 
 		characterController.Move(actualMoveDir * Time.deltaTime);
 
-		animator.SetFloat("Xdir", inputValue.x);
-		animator.SetFloat("Ydir", inputValue.y);
-		animator.SetFloat("Speed", inputValue.magnitude + runValue);
+		animator.SetFloat("Xdir", smoothValue.x);
+		animator.SetFloat("Ydir", smoothValue.y);
+		animator.SetFloat("Speed", smoothValue.magnitude + runValue);
 	}
 }
